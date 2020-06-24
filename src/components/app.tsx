@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { Layout, Select, Tabs, Descriptions,InputNumber } from 'antd';
+import { Layout, Select, Tabs, Descriptions,InputNumber, Button,Affix } from 'antd';
+import ListAppsComponents from './android/apps';
+import ListDeviceInfoComponent from './android/deviceInfo';
+import AboutComponent from './about';
 
 const { Sider } = Layout;
 const { Content } = Layout;
-const { Option } = Select;
 const { TabPane } = Tabs;
 
 export default class AppComponent extends React.Component {
@@ -11,16 +13,14 @@ export default class AppComponent extends React.Component {
     render() {
         return (
             <Layout style={{ height: "100vh" }}>
-                <Sider width={300} theme="light" style={{padding:6}} >
-                    <Select defaultValue="no devices" style={{ width: '100%' }}>
-                        <Option value="no devices">请连接设备</Option>
-                    </Select>
+                <Sider width={256} theme="light" style={{padding:6}} >
+                    <ListAppsComponents />
                     <Tabs size="small" type="card">
                         <TabPane tab="设备" key="1">
-
+                            <ListDeviceInfoComponent />
                         </TabPane>
                         <TabPane tab="设置" key="2">
-                            <Descriptions bordered>
+                            <Descriptions bordered size="small">
                                 <Descriptions.Item label="FPS(>=)" span={3}>
                                     <InputNumber size="small" min={18} max={144} defaultValue={18}></InputNumber>
                                     <InputNumber size="small" min={18} max={144} defaultValue={25}></InputNumber>
@@ -44,13 +44,12 @@ export default class AppComponent extends React.Component {
                             </Descriptions>
                         </TabPane>
                         <TabPane tab="关于" key="3">
-                            <Descriptions title="PerfCat 性能猫" bordered>
-                                <Descriptions.Item label="版本" span={3}>V2020.07.01</Descriptions.Item>
-                                <Descriptions.Item label="帮助" span={3}>http://www.PerfCat.com
-                                </Descriptions.Item>
-                            </Descriptions>
+                            <AboutComponent />
                         </TabPane>
                     </Tabs>
+                    
+                        
+                    
                 </Sider>
                 <Content>
 
