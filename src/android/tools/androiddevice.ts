@@ -69,18 +69,24 @@ export class ADB {
         /**
          * 获取设备列表
          */
-        let cmd = this._adb + ' devices';
-        let result = execSync(cmd);
-        let cmdret = result.toString();
+        try {
+            let cmd = this._adb + ' devices';
+            let result = execSync(cmd);
+            let cmdret = result.toString();
 
-        let cmds = cmdret.trim().split('\n');
+            let cmds = cmdret.trim().split('\n');
 
-        let r = [];
-        for (let val of cmds) {
-            let v = val.trim().split('\t')
-            v.length > 1 ? r.push(v[0]) : '';
+            let r = [];
+            for (let val of cmds) {
+                let v = val.trim().split('\t')
+                v.length > 1 ? r.push(v[0]) : '';
+            }
+            return r;
+        } catch (error) {
+
         }
-        return r;
+        return null;
+
     }
 
     public static checkAdbNormal() {
@@ -157,19 +163,19 @@ export class ADB {
      * @param cmd 
      * @param restargs 
      */
-    public runShellCmd(cmd: string, runconfig?:options, ...restargs: string[]):string {
+    public runShellCmd(cmd: string, runconfig?: options, ...restargs: string[]): string {
         // TODO 如果失去连接又连接成功了
         try {
-            let ret = this.runAdbCmd('shell '+cmd, runconfig, ...restargs);
-            logger.info(`执行${cmd}: 结果 ${ret}`) 
-            if(ret == null){
+            let ret = this.runAdbCmd('shell ' + cmd, runconfig, ...restargs);
+            logger.info(`执行${cmd}: 结果 ${ret}`)
+            if (ret == null) {
                 logger.error(`执行命令错误：${cmd}`)
             }
             return ret
         } catch (error) {
             return '';
-        }   
-        
+        }
+
     }
 
     /**
@@ -178,7 +184,7 @@ export class ADB {
      * @param processList 
      * @param params 
      */
-    public startLogcat(saveDir:string,processList=[],params=''){
+    public startLogcat(saveDir: string, processList = [], params = '') {
 
     }
 
@@ -187,7 +193,7 @@ export class ADB {
      * @param sourcePath 电脑文件路径
      * @param destPath 手机文件路径
      */
-    public pushFile(sourcePath:string,destPath:string){
+    public pushFile(sourcePath: string, destPath: string) {
 
     }
 
@@ -196,7 +202,7 @@ export class ADB {
      * @param sourcePath 手机文件路径
      * @param destPath 电脑文件路径
      */
-    public pullFile(sourcePath:string,destPath:string){
+    public pullFile(sourcePath: string, destPath: string) {
 
     }
 
@@ -204,7 +210,7 @@ export class ADB {
      * 手机截图
      * @param savePath 
      */
-    public screencap(savePath:string){
+    public screencap(savePath: string) {
         return this.runShellCmd(`screencap -p ${savePath}`)
     }
 
@@ -212,7 +218,7 @@ export class ADB {
      * 删除目录
      * @param folderPath 手机文件目录
      */
-    public deleteFolder(folderPath:string){
+    public deleteFolder(folderPath: string) {
         this.runShellCmd(`rm -R ${folderPath}`)
     }
 
@@ -220,28 +226,28 @@ export class ADB {
      * 删除文件
      * @param filePath 文件目录
      */
-    public deleteFile(filePath:string){
+    public deleteFile(filePath: string) {
         this.runShellCmd(`rm ${filePath}`)
     }
     /**
      * 列出目录中文件
      * @param dirPath 目录路径
      */
-    public listDir(dirPath:string){
+    public listDir(dirPath: string) {
         let result = this.runShellCmd(`ls ${dirPath}`)
-        console.log('result',result?.toString());
-        if(!result){
+        console.log('result', result?.toString());
+        if (!result) {
             return "";
         }
         let res = result.toString().replace('\r\r', '\n');
-        if (res.includes('No such file or directory')){
+        if (res.includes('No such file or directory')) {
             logger.error(`文件(夹)${dirPath}不存在`);
         }
         let r = res.split('\n');
-        let list = r.map(line=>{
+        let list = r.map(line => {
             let items = line.split(' ')
-            if(items[0]!="total" && items.length != 2){
-                return items[items.length-1];
+            if (items[0] != "total" && items.length != 2) {
+                return items[items.length - 1];
             }
         })
         return list;
@@ -253,7 +259,7 @@ export class ADB {
      * @param startTime 开始时间
      * @param endTime 结束时间
      */
-    public listDirBetweenTime(dirPath:string,startTime:string,endTime:string){
+    public listDirBetweenTime(dirPath: string, startTime: string, endTime: string) {
 
     }
 
@@ -261,21 +267,21 @@ export class ADB {
      * 启动应用名称
      * @param activityName 应用名称
      */
-    public startActivity(activityName:string){
+    public startActivity(activityName: string) {
 
     }
 
     /**
      * 获取前台activity页面名称
      */
-    public getFocuseActivity(){
+    public getFocuseActivity() {
 
     }
 
     /**
      * 获取Android 在休眠期间app的活跃程度
      */
-    public getTopActivityWithUsageStats(){
+    public getTopActivityWithUsageStats() {
         // cmd: dumpsys usagestats
     }
 
@@ -283,7 +289,7 @@ export class ADB {
      * 根据应用中获取PID值
      * @param packageName 应用的包名
      */
-    public getPidFromPackage(packageName:string):string{
+    public getPidFromPackage(packageName: string): string {
         return '';
     }
 
@@ -292,14 +298,14 @@ export class ADB {
     /**
      * 获取当前系统版本号
      */
-    public getSystemVersion(){
+    public getSystemVersion() {
         return this.runShellCmd('getprop ro.build.version.release');
     }
 
     /**
      * 获取UUID
      */
-    public getGenieUUID(){
+    public getGenieUUID() {
         return this.runShellCmd('getprop ro.genie.uuid');
     }
 
@@ -307,62 +313,62 @@ export class ADB {
      * 获取应用的详细包名信息
      * @param packageName 应用包名
      */
-    public getPackageMsg(packageName:string){
+    public getPackageMsg(packageName: string) {
         return this.runShellCmd(`dumpsys package ${packageName}`)
     }
 
-    public getAndroidVersion(){
+    public getAndroidVersion() {
         return this.runShellCmd('getprop ro.build.version.release')
     }
 
     /**
      * sdk版本
      */
-    public getSDKVersion(){
+    public getSDKVersion() {
         return this.runShellCmd('getprop ro.build.version.sdk')
     }
 
     /**
      * 获取手机品牌
      */
-    public getPhoneBand(){
+    public getPhoneBand() {
         return this.runShellCmd('getprop ro.product.model')
     }
 
     /**
      * 获取屏幕尺寸
      */
-    public getScreenSize(){
+    public getScreenSize() {
         return this.runShellCmd('getprop ro.product.screensize')
     }
 
     /**
      * 获取屏幕分辨率
      */
-    public getWMSize(){
-        const size:string = this.runShellCmd("wm size")
+    public getWMSize() {
+        const size: string = this.runShellCmd("wm size")
         const vmsize = size.split(':')[1].trim()
         return vmsize
     }
-    
+
     /**
      * 获取CPU架构信息
      */
-    public getCPUAbi(){
+    public getCPUAbi() {
         return this.runShellCmd('getprop ro.product.cpu.abi')
     }
 
     /**
      * 获取CPU型号
      */
-    public getCPUModel(){
+    public getCPUModel() {
         return this.runShellCmd('getprop ro.product.board')
     }
 
-    public getTotalMemo(){
+    public getTotalMemo() {
         const mem = this.runShellCmd('cat /proc/meminfo')
-        const line = mem.split('\n').filter((line)=>{
-            if(line.includes('MemTotal')){
+        const line = mem.split('\n').filter((line) => {
+            if (line.includes('MemTotal')) {
                 return line
             }
         })
@@ -372,17 +378,17 @@ export class ADB {
     /**
      * 获取设备串号
      */
-    public getDeviceIMEI(){
+    public getDeviceIMEI() {
         return this.runShellCmd('dumpsys iphonesubinfo')
     }
 
     /**
      * 获取已安装app列表
      */
-    public listInstalledApp(){
+    public listInstalledApp() {
         const result = this.runShellCmd('pm list packages');
         const applist = result?.split('\n')
-        return applist?.map(app=>app.trim().split(':')[1])
+        return applist?.map(app => app.trim().split(':')[1])
     }
 
 }

@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Layout, Select, Tabs, Descriptions,InputNumber, Button,Affix } from 'antd';
+import { Layout, Select, Tabs, Descriptions,InputNumber, Button,Affix, Row } from 'antd';
 import ListAppsComponents from './android/apps';
 import ListDeviceInfoComponent from './android/deviceInfo';
 import AboutComponent from './about';
+import CPUInfoComponent from './charts/cpuchart';
 
 const { Sider } = Layout;
 const { Content } = Layout;
@@ -52,7 +53,9 @@ export default class AppComponent extends React.Component {
                     
                 </Sider>
                 <Content>
-
+                    <Layout style={{height:300,padding:10}}>
+                        <CPUInfoComponent />
+                    </Layout>
                 </Content>
             </Layout>
         )
